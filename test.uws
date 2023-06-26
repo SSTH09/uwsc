@@ -1,0 +1,47 @@
+GETTIME()
+DateTime = G_TIME_YY4 + G_TIME_MM2 + G_TIME_DD2 + "-" + G_TIME_HH2 + G_TIME_NN2 + G_TIME_SS2
+CSV_path = "ログ\test_" + DateTime + ".csv"
+DIM Header[] = "No", "Res1", "Res2"
+
+CSV_row = GetCSVRowNum(CSV_path)
+MSGBOX(CSV_row)
+FOR i = 1 TO 20
+	Row = CSV_row + i
+	Content = ""
+
+	IFB i = 1 THEN
+		FOR j = 0 TO 2
+			WriteCSV(CSV_path, Header[j], Row, j + 1)
+		NEXT
+	ENDIF
+
+	WriteCSV(CSV_path, i, Row + 1, 1)
+
+	IF i MOD 2 = 0 THEN
+		Content = "○"
+	ELSE
+		Content = "-"
+	ENDIF
+	WriteCSV(CSV_path, Content, Row + 1, 2)
+
+	IF i MOD 3 = 0 THEN
+		Content = "○"
+	ELSE
+		Content = "-"
+	ENDIF
+	WriteCSV(CSV_path, Content, Row + 1, 3)
+NEXT
+
+FUNCTION GetCSVRowNum(Path)
+	FID = FOPEN(Path, F_READ OR F_WRITE)
+	RESULT = FGET(FID, F_LINECOUNT)
+	FCLOSE(FID)
+FEND
+
+PROCEDURE WriteCSV(Path, Content, Row, Col)
+	FID = FOPEN(Path, F_READ OR F_WRITE)
+	IF FID = -1 THEN EXITEXIT
+
+	FPUT(FID, Content, Row, Col)
+	FCLOSE(FID)
+FEND

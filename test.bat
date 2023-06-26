@@ -1,0 +1,1 @@
+uwsc.exe test.uws
